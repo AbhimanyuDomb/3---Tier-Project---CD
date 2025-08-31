@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: maestrodomb/frontend:694535bf15cb7328bd153687abca4167a3fd083a
+          image: maestrodomb/frontend:d84d2e1abba90ed063e81fd1d5f6d3483311f859
           ports:
             - containerPort: 80
 ---

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: maestrodomb/backend:694535bf15cb7328bd153687abca4167a3fd083a
+          image: maestrodomb/backend:d84d2e1abba90ed063e81fd1d5f6d3483311f859
           ports:
             - containerPort: 5000
           env:
