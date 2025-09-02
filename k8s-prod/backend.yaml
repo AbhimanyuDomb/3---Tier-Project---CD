@@ -42,10 +42,17 @@ kind: Service
 metadata:
   name: backend-svc
   namespace: prod
+  labels:
+    app: backend
+    monitoring: "true"          # <— ServiceMonitor selector
 spec:
   selector:
     app: backend
   ports:
-    - port: 5000
-      targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: http
+    - name: metrics              # <— what ServiceMonitor scrapes
+      port: 9090
+      targetPort: metrics
   type: ClusterIP
