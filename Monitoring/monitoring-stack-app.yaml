@@ -4,15 +4,15 @@ metadata:
   name: monitoring-stack
   namespace: argocd
   annotations:
-    # make sure CRDs land before our ServiceMonitors/Rules
     argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: 61.0.0     # update to latest when you like
+    targetRevision: 61.0.0
     helm:
+      releaseName: monitoring
       values: |
         prometheus:
           prometheusSpec:
@@ -22,16 +22,26 @@ spec:
             podMonitorNamespaceSelector: {}
         grafana:
           enabled: true
+          # === OPTION A: Ingress (enable when you have DNS) ===
           ingress:
             enabled: true
             ingressClassName: nginx
-            hosts: [ grafana.dombops.org ]
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt
+            hosts:
+              - grafana.qa.example.com      # <- change to your domain/host
+            tls:
+              - secretName: grafana-qa-tls
+                hosts:
+                  - grafana.dombs.org
+    
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClassName: ebs-sc        # or your default gp3 SC
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ "CreateNamespace=true" ]
