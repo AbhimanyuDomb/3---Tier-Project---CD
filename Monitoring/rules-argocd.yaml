@@ -3,6 +3,8 @@ kind: PrometheusRule
 metadata:
   name: argocd-rules
   namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   groups:
   - name: argocd
@@ -13,4 +15,4 @@ spec:
       labels: { severity: warning }
       annotations:
         summary: "Argo CD apps out of sync"
-        description: "{{ $value }} app(s) have been non-Synced for 10m"
+        description: "{{ $value }} app(s) not Synced for 10m"
