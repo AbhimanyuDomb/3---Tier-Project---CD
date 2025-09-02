@@ -3,8 +3,8 @@ kind: ServiceMonitor
 metadata:
   name: argocd
   namespace: monitoring
-  labels:
-    app: argocd-monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   namespaceSelector:
     matchNames: ["argocd"]
