@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: monitoring-stack
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -22,26 +20,17 @@ spec:
             podMonitorNamespaceSelector: {}
         grafana:
           enabled: true
-          
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              cert-manager.io/cluster-issuer: letsencrypt
-            hosts:
-              - grafana.qa.example.com      # <- change to your domain/host
-            tls:
-              - secretName: grafana-qa-tls
-                hosts:
-                  - grafana.qa.example.com
-          
           persistence:
             enabled: true
             size: 10Gi
-            storageClassName: ebs-sc        # or your default gp3 SC
+            storageClassName: ebs-sc
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
-    automated: { prune: true, selfHeal: true }
-    syncOptions: [ "CreateNamespace=true" ]
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true   # 👈 add this
