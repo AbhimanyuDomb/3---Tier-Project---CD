@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-services
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  namespaceSelector:
+    matchNames: ["qa","prod"]
+  selector:
+    matchLabels:
+      monitoring: "true"           # add this label on Services you want scraped
+  endpoints:
+    - port: metrics                # Service must have a port named "metrics"
+      interval: 30s
+      path: /metrics               # change if your app uses a different path
