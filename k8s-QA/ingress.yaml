@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: user-management-ingress
-  namespace: QA
+  namespace: qa
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: qa.adityajaiswal.com
+  - host: qa.dombops.org
     http:
       paths:
       - path: /api
@@ -21,7 +21,7 @@ spec:
         pathType: Prefix
         backend:
           service: { name: frontend-svc, port: { number: 80 } }
-  - host: www.qa.adityajaiswal.com
+  - host: www.qa.dombops.org
     http:
       paths:
       - path: /api
@@ -33,5 +33,5 @@ spec:
         backend:
           service: { name: frontend-svc, port: { number: 80 } }
   tls:
-  - hosts: [qa.adityajaiswal.com, www.qa.adityajaiswal.com]
+  - hosts: [qa.dombops.org, www.qa.dombops.org]
     secretName: adityajaiswal-com-tls   # <-- consistent, .com
