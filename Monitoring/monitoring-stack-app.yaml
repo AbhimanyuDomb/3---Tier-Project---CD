@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-stack
+  namespace: argocd
+  annotations:
+    # make sure CRDs land before our ServiceMonitors/Rules
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 61.0.0     # update to latest when you like
+    helm:
+      values: |
+        prometheus:
+          prometheusSpec:
+            serviceMonitorSelector: {}
+            serviceMonitorNamespaceSelector: {}
+            podMonitorSelector: {}
+            podMonitorNamespaceSelector: {}
+        grafana:
+          enabled: true
+          # optional ingress:
+          # ingress:
+          #   enabled: true
+          #   ingressClassName: nginx
+          #   hosts: [ grafana.qa.example.com ]
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
