@@ -4,26 +4,27 @@ kind: Deployment
 metadata:
   name: backend
   namespace: qa
-  labels:
-    app: backend
+  labels: { app: backend }
 spec:
   replicas: 3
-  selector:
-    matchLabels:
-      app: backend
+  selector: { matchLabels: { app: backend } }
   template:
     metadata:
-      labels:
-        app: backend
+      labels: { app: backend }
     spec:
       containers:
         - name: backend
           image: maestrodomb/backend:d84d2e1abba90ed063e81fd1d5f6d3483311f859
           ports:
-            - containerPort: 5000
+            - name: http
+              containerPort: 5000
+            - name: metrics               # <— container exposes metrics here
+              containerPort: 9090
           env:
             - name: DB_HOST
               value: mysql
+            - name: DB_PORT
+              value: "3306"
             - name: DB_USER
               value: root
             - name: DB_PASSWORD
@@ -42,10 +43,17 @@ kind: Service
 metadata:
   name: backend-svc
   namespace: qa
+  labels:
+    app: backend
+    monitoring: "true"          # <— ServiceMonitor selector
 spec:
   selector:
     app: backend
   ports:
-    - port: 5000
-      targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: http
+    - name: metrics              # <— what ServiceMonitor scrapes
+      port: 9090
+      targetPort: metrics
   type: ClusterIP
