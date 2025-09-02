@@ -22,11 +22,10 @@ spec:
             podMonitorNamespaceSelector: {}
         grafana:
           enabled: true
-          # optional ingress:
-          # ingress:
-          #   enabled: true
-          #   ingressClassName: nginx
-          #   hosts: [ grafana.qa.dombops.org ]
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts: [ grafana.dombops.org ]
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
