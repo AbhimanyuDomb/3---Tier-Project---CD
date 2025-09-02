@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: argocd
+    rules:
+    - alert: ArgoCDAppsOutOfSync
+      expr: sum(argocd_app_info{sync_status!="Synced"}) > 0
+      for: 10m
+      labels: { severity: warning }
+      annotations:
+        summary: "Argo CD apps out of sync"
+        description: "{{ $value }} app(s) have been non-Synced for 10m"
