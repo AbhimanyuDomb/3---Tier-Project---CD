@@ -4,11 +4,11 @@ metadata:
   name: user-management-ingress
   namespace: qa
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-qa
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
   - host: qa.dombops.org
     http:
